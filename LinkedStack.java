@@ -23,12 +23,12 @@ public final class LinkedStack<T> implements StackInterface<T> {
 
 	// currently following textbook
 	// im using online pdf textbook pg 252
-	public void convertToPostFix(String infix) {
+	public String convertToPostFix(String infix) {
 		LinkedStack<Character> operatorStack = new LinkedStack<>();
 		String postfix = "";
 
 		for (char ch : infix.toCharArray()) {
-			char nextChar = ch.next();
+			char nextChar = ch;
 
 			if (Character.isLetter(nextChar))
 				postfix += nextChar;
@@ -37,10 +37,24 @@ public final class LinkedStack<T> implements StackInterface<T> {
 			else if (nextChar == '+' || nextChar == '-' || nextChar == '*' || nextChar == '/') {
 				while (!operatorStack.isEmpty() && (precedence(nextChar) <= precedence(operatorStack.peek()))) {
 					postfix += operatorStack.peek();
+					operatorStack.pop();
+				}
+			} else if (nextChar == ')') {
+				char topOperator = operatorStack.pop();
+
+				while (topOperator != '(') {
+					postfix += topOperator;
+					topOperator = operatorStack.pop();
 				}
 			}
 
 		}
+
+		while (!operatorStack.isEmpty()) {
+			postfix += operatorStack.pop();
+		}
+
+		return postfix;
 	}
 
 	/**
