@@ -17,7 +17,7 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 
 	public ResizableArrayStack(int initialCapacity) {
 		integrityOK = false;
-		checkCapacity(initialCapacity);
+		// checkCapacity(initialCapacity);
 
 		// The cast is safe because the new array contains null entries
 		@SuppressWarnings("unchecked")
@@ -61,4 +61,40 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 //  < Implementations of the private methods go here; checkCapacity and checkIntegrity
 //    are analogous to those in Chapter 2. >
 //  . . .
+	public int evaluatePostFix(String postfix) {
+		ResizableArrayStack valueStack = new ResizableArrayStack();
+
+		for (char ch : postfix.toCharArray()) {
+			char nextChar = ch;
+
+			if (Character.isDigit(nextChar))
+				valueStack.push(ch);
+			else if (nextChar == '+') {
+				int operandTwo = valueStack.pop();
+				int operandOne = valueStack.pop();
+				int result = operandTwo + operandOne;
+				valueStack.push((char) result);
+			} else if (nextChar == '-') {
+				int operandTwo = valueStack.pop();
+				int operandOne = valueStack.pop();
+				int result = operandTwo - operandOne;
+				valueStack.push((char) result);
+			} else if (nextChar == '*') {
+				int operandTwo = valueStack.pop();
+				int operandOne = valueStack.pop();
+				int result = operandTwo * operandOne;
+				valueStack.push((char) result);
+			} else if (nextChar == '/') {
+				int operandTwo = valueStack.pop();
+				int operandOne = valueStack.pop();
+				int result = operandTwo / operandOne;
+				valueStack.push((char) result);
+			}
+		}
+
+		return valueStack.peek();
+		// need to return int i just changed it to void cause the error notification was
+		// annoying
+	}
+
 } // end ArrayStack
