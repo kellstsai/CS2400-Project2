@@ -26,7 +26,7 @@ public final class LinkedStack<T> implements StackInterface<T> {
 	// currently following textbook
 	// im using online pdf textbook pg 252
 	public static String convertToPostFix(String infix) {
-		LinkedStack<Character> operatorStack = new LinkedStack<>();
+		StackInterface<Character> operatorStack = new LinkedStack<>();
 		String postfix = "";
 
 		for (char ch : infix.toCharArray()) {
@@ -148,7 +148,7 @@ public final class LinkedStack<T> implements StackInterface<T> {
 	}
 
 	public static void main(String[] args) {
-		String sample = "a/b*(c+(d-e))";
+		String sample = "a*b/(c-a)+d*e";
 		System.out.println(convertToPostFix(sample));
 	}
 } // end LinkedStack
