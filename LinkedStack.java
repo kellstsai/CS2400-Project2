@@ -1,3 +1,5 @@
+import java.util.EmptyStackException;
+
 /**
  * A class of stacks whose entries are stored in a chain of nodes.
  * 
@@ -23,11 +25,14 @@ public final class LinkedStack<T> implements StackInterface<T> {
 
 	// currently following textbook
 	// im using online pdf textbook pg 252
-	public String convertToPostFix(String infix) {
+	public static String convertToPostFix(String infix) {
 		LinkedStack<Character> operatorStack = new LinkedStack<>();
 		String postfix = "";
 
 		for (char ch : infix.toCharArray()) {
+			System.out.println("ch: " + ch);
+			System.out.println("post: " + postfix);
+
 			char nextChar = ch;
 
 			if (Character.isLetter(nextChar))
@@ -39,7 +44,10 @@ public final class LinkedStack<T> implements StackInterface<T> {
 					postfix += operatorStack.peek();
 					operatorStack.pop();
 				}
-			} else if (nextChar == ')') {
+				operatorStack.push(ch);
+			} else if (nextChar == '(')
+				operatorStack.push(ch);
+			else if (nextChar == ')') {
 				char topOperator = operatorStack.pop();
 
 				while (topOperator != '(') {
@@ -47,7 +55,6 @@ public final class LinkedStack<T> implements StackInterface<T> {
 					topOperator = operatorStack.pop();
 				}
 			}
-
 		}
 
 		while (!operatorStack.isEmpty()) {
@@ -63,7 +70,7 @@ public final class LinkedStack<T> implements StackInterface<T> {
 	 * @param nextChar (operator)
 	 * @return nextChar's (operator) precedence
 	 */
-	private int precedence(char nextChar) {
+	private static int precedence(char nextChar) {
 
 		switch (nextChar) {
 		case ('+'):
@@ -111,31 +118,37 @@ public final class LinkedStack<T> implements StackInterface<T> {
 
 	@Override
 	public void push(T newEntry) {
-		// TODO Auto-generated method stub
-
+		topNode = new Node(newEntry, topNode);
 	}
 
 	@Override
 	public T pop() {
-		// TODO Auto-generated method stub
-		return null;
+		T top = peek();
+		// Assertion: topNode != null
+		topNode = topNode.getNextNode();
+		return top;
 	}
 
 	@Override
 	public T peek() {
-		// TODO Auto-generated method stub
-		return null;
+		if (isEmpty())
+			throw new EmptyStackException();
+		else
+			return topNode.getData();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return topNode == null;
 	}
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
+		topNode = null;
+	}
 
+	public static void main(String[] args) {
+		String sample = "a/b*(c+(d-e))";
+		System.out.println(convertToPostFix(sample));
 	}
 } // end LinkedStack
