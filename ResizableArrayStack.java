@@ -95,32 +95,38 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 
 			if (Character.isDigit(nextChar))
 				valueStack.push(ch);
-			else if (nextChar == '+') {
+			else if (nextChar == '+' || nextChar == '-' || nextChar == '*' || nextChar == '/') {
 				int operandTwo = valueStack.pop();
 				int operandOne = valueStack.pop();
-				int result = operandTwo + operandOne;
-				valueStack.push((char) result);
-			} else if (nextChar == '-') {
-				int operandTwo = valueStack.pop();
-				int operandOne = valueStack.pop();
-				int result = operandTwo - operandOne;
-				valueStack.push((char) result);
-			} else if (nextChar == '*') {
-				int operandTwo = valueStack.pop();
-				int operandOne = valueStack.pop();
-				int result = operandTwo * operandOne;
-				valueStack.push((char) result);
-			} else if (nextChar == '/') {
-				int operandTwo = valueStack.pop();
-				int operandOne = valueStack.pop();
-				int result = operandTwo / operandOne;
+				int result = calc(ch, operandOne, operandTwo);
 				valueStack.push((char) result);
 			}
 		}
 
 		return valueStack.peek();
+
 		// need to return int i just changed it to void cause the error notification was
 		// annoying
+	}
+
+	public static int calc(char ch, int two, int one) {
+		int result = 0;
+
+		switch (ch) {
+		case '+':
+			result = one + two;
+			break;
+		case '-':
+			result = one - two;
+			break;
+		case '*':
+			result = one * two;
+			break;
+		case '/':
+			result = one / two;
+			break;
+		}
+		return result;
 	}
 
 	public static void main(String[] args) {
