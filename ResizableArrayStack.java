@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.EmptyStackException;
+
 /**
  * A class of stacks whose entries are stored in an array.
  * 
@@ -29,40 +32,63 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 
 	@Override
 	public void push(T newEntry) {
-		// TODO Auto-generated method stub
+		// checkIntegrity();
+		ensureCapacity();
+		stack[topIndex + 1] = newEntry;
 
 	}
 
 	@Override
 	public T pop() {
-		// TODO Auto-generated method stub
-		return null;
+		// checkIntegrity();
+		if (isEmpty())
+			throw new EmptyStackException();
+		else {
+			T top = stack[topIndex];
+			stack[topIndex] = null;
+			topIndex--;
+			return top;
+		}
 	}
 
 	@Override
 	public T peek() {
-		// TODO Auto-generated method stub
-		return null;
+		// cehckIntegrity();
+		if (isEmpty())
+			throw new EmptyStackException();
+		else
+			return stack[topIndex];
 	}
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return topIndex < 0;
 	}
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
+		// checkIntegrity();
+		while (topIndex > -1) {
+			stack[topIndex] = null;
+			topIndex--;
+		}
 
 	} // end constructor
+
+	private void ensureCapacity() {
+		if (topIndex >= stack.length - 1) {
+			int newLength = 2 * stack.length; // can be 1.5 or golden ratio, 2 is just for convenience
+			// checkCapacity(newLength);
+			stack = Arrays.copyOf(stack, newLength);
+		}
+	}
 
 //  < Implementations of the stack operations go here. >
 //  < Implementations of the private methods go here; checkCapacity and checkIntegrity
 //    are analogous to those in Chapter 2. >
 //  . . .
-	public int evaluatePostFix(String postfix) {
-		ResizableArrayStack valueStack = new ResizableArrayStack();
+	public static int evaluatePostFix(String postfix) {
+		ResizableArrayStack<Character> valueStack = new ResizableArrayStack<>();
 
 		for (char ch : postfix.toCharArray()) {
 			char nextChar = ch;
@@ -95,6 +121,11 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 		return valueStack.peek();
 		// need to return int i just changed it to void cause the error notification was
 		// annoying
+	}
+
+	public static void main(String[] args) {
+		String sample = "23_45-/";
+		System.out.println(evaluatePostFix(sample));
 	}
 
 } // end ArrayStack
