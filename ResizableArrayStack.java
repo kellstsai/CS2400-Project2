@@ -20,7 +20,7 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 
 	public ResizableArrayStack(int initialCapacity) {
 		integrityOK = false;
-		// checkCapacity(initialCapacity);
+		checkCapacity(initialCapacity);
 
 		// The cast is safe because the new array contains null entries
 		@SuppressWarnings("unchecked")
@@ -32,15 +32,16 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 
 	@Override
 	public void push(T newEntry) {
-		// checkIntegrity();
+		checkIntegrity();
 		ensureCapacity();
 		stack[topIndex + 1] = newEntry;
+		topIndex++;
 
 	}
 
 	@Override
 	public T pop() {
-		// checkIntegrity();
+		checkIntegrity();
 		if (isEmpty())
 			throw new EmptyStackException();
 		else {
@@ -53,7 +54,7 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 
 	@Override
 	public T peek() {
-		// cehckIntegrity();
+		checkIntegrity();
 		if (isEmpty())
 			throw new EmptyStackException();
 		else
@@ -67,7 +68,7 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 
 	@Override
 	public void clear() {
-		// checkIntegrity();
+		checkIntegrity();
 		while (topIndex > -1) {
 			stack[topIndex] = null;
 			topIndex--;
@@ -78,10 +79,23 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 	private void ensureCapacity() {
 		if (topIndex >= stack.length - 1) {
 			int newLength = 2 * stack.length; // can be 1.5 or golden ratio, 2 is just for convenience
-			// checkCapacity(newLength);
+			checkCapacity(newLength);
 			stack = Arrays.copyOf(stack, newLength);
 		}
 	}
+
+	// Throws an exception if the client requests a capacity that is too large.
+	private void checkCapacity(int capacity) {
+		if (capacity > MAX_CAPACITY)
+			throw new IllegalStateException(
+					"Attempt to create a bag whose capacity exceeds " + "allowed maximum of " + MAX_CAPACITY);
+	} // end checkCapacity
+
+	// Throws an exception if receiving object is not initialized.
+	private void checkIntegrity() {
+		if (!integrityOK)
+			throw new SecurityException("ArrayBag object is corrupt.");
+	} // end checkIntegrity
 
 //  < Implementations of the stack operations go here. >
 //  < Implementations of the private methods go here; checkCapacity and checkIntegrity
@@ -92,18 +106,27 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 
 		for (char ch : postfix.toCharArray()) {
 			char nextChar = ch;
+			System.out.println("ch: " + ch);
 
-			if (Character.isDigit(nextChar))
+			if (Character.isDigit(nextChar)) {
 				valueStack.push(ch);
-			else if (nextChar == '+' || nextChar == '-' || nextChar == '*' || nextChar == '/') {
+				System.out.println("peek:" + valueStack.peek());
+			} else if (nextChar == '+' || nextChar == '-' || nextChar == '*' || nextChar == '/') {
 				int operandTwo = valueStack.pop();
 				int operandOne = valueStack.pop();
 				int result = calc(ch, operandOne, operandTwo);
-				valueStack.push((char) result);
+
+				System.out.println("result again: " + result);
+				valueStack.push((char) (result + '0'));
 			}
+
+			System.out.println("end peek: " + valueStack.peek());
+			System.out.println("print: ");
+			print(valueStack);
 		}
 
-		return valueStack.peek();
+		System.out.println("\nfinal answer: ");
+		return valueStack.peek() - 48;
 
 		// need to return int i just changed it to void cause the error notification was
 		// annoying
@@ -111,26 +134,43 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 
 	public static int calc(char ch, int two, int one) {
 		int result = 0;
+		two -= 48;
+		one -= 48;
 
+		System.out.println("\nchar: " + ch + " two: " + two + " one: " + one);
 		switch (ch) {
 		case '+':
-			result = one + two;
+			result = two + one;
 			break;
 		case '-':
-			result = one - two;
+			result = two - one;
 			break;
 		case '*':
-			result = one * two;
+			result = two * one;
 			break;
 		case '/':
-			result = one / two;
+			result = two / one;
 			break;
 		}
+
+		System.out.println("\ncalc\nresult: " + result + "\n");
 		return result;
 	}
 
+	public static void print(ResizableArrayStack<Character> c) {
+		if (c.isEmpty())
+			return;
+
+		char temp = c.peek();
+		c.pop();
+		System.out.println(temp);
+		print(c);
+		c.push(temp);
+	}
+
 	public static void main(String[] args) {
-		String sample = "23_45-/";
+		String sample = "23*42-/56*+";
+
 		System.out.println(evaluatePostFix(sample));
 	}
 
