@@ -20,29 +20,33 @@ public final class LinkedStack<T> implements StackInterface<T> {
 	/**
 	 * Converts an infix expression to an equivalent postfix expression.
 	 * 
-	 * @param infix
+	 * @param an infix expression
 	 */
 
 	// currently following textbook
 	// im using online pdf textbook pg 252
 	public static String convertToPostFix(String infix) {
 		StackInterface<Character> operatorStack = new LinkedStack<>();
-		String postfix = "";
+		String postfix = ""; // empty String to hold the postfix expression
 
-		for (char ch : infix.toCharArray()) {
-			System.out.println("ch: " + ch);
-			System.out.println("post: " + postfix);
+		for (char ch : infix.toCharArray()) { // iterate through the infix String
+			// System.out.println("ch: " + ch);
+			// System.out.println("post: " + postfix);
 
-			char nextChar = ch;
+			char nextChar = ch; // temp variable to hold onto the character
 
-			if (Character.isLetter(nextChar))
+			if (Character.isLetter(nextChar)) // only essentially looking for operators
 				postfix += nextChar;
-			else if (nextChar == '^')
+			else if (nextChar == '^') // lowest precedence so will be pushed onto the stack
 				operatorStack.push(nextChar);
 			else if (nextChar == '+' || nextChar == '-' || nextChar == '*' || nextChar == '/') {
 				while (!operatorStack.isEmpty() && (precedence(nextChar) <= precedence(operatorStack.peek()))) {
+					// if the stack is not empty and the precedence of the current character is less
+					// than the precedence of the character in the stack
 					postfix += operatorStack.peek();
 					operatorStack.pop();
+					// the precedence of the stack cannot be lower than the precedence of the
+					// character, hence the pop
 				}
 				operatorStack.push(ch);
 			} else if (nextChar == '(')
@@ -53,16 +57,18 @@ public final class LinkedStack<T> implements StackInterface<T> {
 				while (topOperator != '(') {
 					postfix += topOperator;
 					topOperator = operatorStack.pop();
+					// popping the stack until the left parenthesis is found to complete the set
 				}
 			}
 		}
 
+		// if the stack is not empty, empty the rest of the stack into the postfix
 		while (!operatorStack.isEmpty()) {
 			postfix += operatorStack.pop();
 		}
 
 		return postfix;
-	}
+	} // end convertToPostFix
 
 	/**
 	 * Returns the precedence of the given operator.
@@ -72,19 +78,20 @@ public final class LinkedStack<T> implements StackInterface<T> {
 	 */
 	private static int precedence(char nextChar) {
 
+		// switch cases to check what the precedence of the operator is
 		switch (nextChar) {
 		case ('+'):
 		case ('-'):
 			return 1;
-
+		// + and - are the highest precedence
 		case ('*'):
 		case ('/'):
 			return 2;
-
+		// * and / are the second highest precedence
 		}
 
 		return 0;
-	}
+	} // end precedence
 
 	private class Node {
 		private T data; // Entry in stack
