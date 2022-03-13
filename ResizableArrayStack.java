@@ -120,16 +120,15 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 				valueStack.push((char) (result + '0'));
 			}
 
-			System.out.println("end peek: " + valueStack.peek());
+			System.out.println("regular end peek: " + valueStack.peek());
+			System.out.println("end peek: ");
+			System.out.println(valueStack.peek() - 48);
 			System.out.println("print: ");
 			print(valueStack);
 		}
 
 		System.out.println("\nfinal answer: ");
 		return valueStack.peek() - 48;
-
-		// need to return int i just changed it to void cause the error notification was
-		// annoying
 	}
 
 	public static int calc(char ch, int two, int one) {
@@ -157,6 +156,11 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 		return result;
 	}
 
+	/**
+	 * Prints all the elements in a stack.
+	 * 
+	 * @param a stack of characters
+	 */
 	public static void print(ResizableArrayStack<Character> c) {
 		if (c.isEmpty())
 			return;
@@ -169,8 +173,14 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 	}
 
 	public static void main(String[] args) {
-		String sample = "23*42-/56*+";
+		// String sample = "23*42-/56*+";
+		// String sample = "26*35-/";
 
+		// V this one don't work for some reason (ans -58)
+		// String sample = "234*5*-";
+
+		String sample = "234-/5*";
+		// String sample = "6342^*+5-";
 		System.out.println(evaluatePostFix(sample));
 	}
 
