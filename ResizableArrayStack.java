@@ -104,37 +104,43 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 	public static int evaluatePostFix(String postfix) {
 		ResizableArrayStack<Character> valueStack = new ResizableArrayStack<>();
 
-		for (char ch : postfix.toCharArray()) {
+		for (char ch : postfix.toCharArray()) { // iterate through each character in the String
 			char nextChar = ch;
 			System.out.println("ch: " + ch);
 
-			if (Character.isDigit(nextChar)) {
+			if (Character.isDigit(nextChar)) { // currently push only numbers
 				valueStack.push(ch);
 				System.out.println("peek:" + valueStack.peek());
 			} else if (nextChar == '+' || nextChar == '-' || nextChar == '*' || nextChar == '/') {
 				int operandTwo = valueStack.pop();
-				int operandOne = valueStack.pop();
+				int operandOne = valueStack.pop(); // pop the top 2 items and do the necessary calculation
 				int result = calc(ch, operandOne, operandTwo);
 
 				System.out.println("result again: " + result);
-				valueStack.push((char) (result + '0'));
+				valueStack.push((char) (result + '0')); // converting int to char by adding 48 which is char 0
 			}
 
 			System.out.println("regular end peek: " + valueStack.peek());
 			System.out.println("end peek: ");
-			System.out.println(valueStack.peek() - 48);
+			System.out.println(valueStack.peek() - '0');
 			System.out.println("print: ");
 			print(valueStack);
 		}
 
 		System.out.println("\nfinal answer: ");
-		return valueStack.peek() - 48;
-	}
+		return valueStack.peek() - '0';
+	} // end evaluatePostFix
 
+	/**
+	 * @param character that contains the operator
+	 * @param integer   two
+	 * @param integer   one
+	 * @return The calculation between integer one and two.
+	 */
 	public static int calc(char ch, int two, int one) {
 		int result = 0;
-		two -= 48;
-		one -= 48;
+		two -= '0'; // converting from character into integer by subtracting 48
+		one -= '0';
 
 		System.out.println("\nchar: " + ch + " two: " + two + " one: " + one);
 		switch (ch) {
@@ -150,11 +156,11 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 		case '/':
 			result = two / one;
 			break;
-		}
+		} // end switch case
 
 		System.out.println("\ncalc\nresult: " + result + "\n");
 		return result;
-	}
+	} // end calc
 
 	/**
 	 * Prints all the elements in a stack.
@@ -163,13 +169,13 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 	 */
 	public static void print(ResizableArrayStack<Character> c) {
 		if (c.isEmpty())
-			return;
+			return; // stop when the stack is empty
 
-		char temp = c.peek();
-		c.pop();
-		System.out.println(temp);
-		print(c);
-		c.push(temp);
+		char temp = c.peek(); // temp is the top most value
+		c.pop(); // pop the top
+		System.out.println(temp); // print the top
+		print(c); // print the rest of the stack
+		c.push(temp); // push temp back
 	}
 
 	public static void main(String[] args) {
@@ -177,9 +183,9 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 		// String sample = "26*35-/";
 
 		// V this one don't work for some reason (ans -58)
-		// String sample = "234*5*-";
+		String sample = "234*5*-";
 
-		String sample = "234-/5*";
+		// String sample = "234-/5*";
 		// String sample = "6342^*+5-";
 		System.out.println(evaluatePostFix(sample));
 	}
