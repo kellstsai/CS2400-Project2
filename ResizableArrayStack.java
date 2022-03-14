@@ -175,7 +175,7 @@ public final class ResizableArrayStack<T> implements StackInterface<T> {
 		c.pop(); // pop the top
 		System.out.println(temp); // print the top
 		print(c); // print the rest of the stack
-		c.push(temp); // push temp back
+		c.push(temp); // when returning from recursive loop, push each temp back
 	}
 
 	public static void main(String[] args) {
